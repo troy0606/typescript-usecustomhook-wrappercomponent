@@ -12,12 +12,10 @@ const TodoList: React.FC<IProps> = (props): JSX.Element => {
     let { promiseData } = props;
 
     return promiseData ? (
-      <p className="List" key={promiseData.id}>
-        <div className="List-header">
-          <p>{promiseData.userId}</p>
-          <h2>{promiseData.title}</h2>
-        </div>
-        <p className="List-note">
+      <p key={promiseData.id}>
+        <p>{promiseData.userId}</p>
+        <p>{promiseData.title}</p>
+        <p>
           <input
             type="checkbox"
             name={`${promiseData.id}`}

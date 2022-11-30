@@ -2,41 +2,43 @@ import { objectValueString } from "../models/types/common";
 import { IValidateRule } from "./ValidateRule";
 
 export interface IValidator {
-  column: string,
-  validRule: Map<string, IValidateRule>;
+  column: unknown,
+  validRules: Map<string, IValidateRule>;
   setValidRule?: (ruleName: string, validateRule: IValidateRule) => void;
   getValidRule?: (ruleName: string) => IValidateRule | undefined;
-  getAllInvalidRule?: (value: string, requiredRule: Set<string>) => objectValueString;
+  getAllInvalidRule: (value: string) => objectValueString;
 }
 
 
-export default class Validator implements IValidator {
-  column: string;
-  validRule: Map<string, IValidateRule>;
+export default class Validator<T> implements IValidator {
+  column: T;
+  validRules: Map<string, IValidateRule>;
   readonly inValidRule: { [key: string]: string } = {};;
 
   constructor(
-    column: string,
+    column: T,
     validRule: Map<string, IValidateRule>,
   ) {
     this.column = column;
-    this.validRule = validRule;
+    this.validRules = validRule;
   }
 
   setValidRule(ruleName: string, validateRule: IValidateRule) {
-    this.validRule.set(ruleName, validateRule);
+    this.validRules.set(ruleName, validateRule);
   }
 
+  // 如果之後有要針對特定條件才要驗證可以從這裡取得特定條件驗證
   getValidRule(ruleName: string) {
-    return this.validRule.get(ruleName);
+    return this.validRules.get(ruleName);
   }
 
-  getAllInvalidRule(value: string, requiredRule: Set<string>): objectValueString { 
-    requiredRule.forEach(required => {
-      const currentValidRule = this.getValidRule(required);
-      if(currentValidRule) {
-        if(!currentValidRule.regex.test(value)) {
-          this.inValidRule[required] = currentValidRule.errorMessage;
+  getAllInvalidRule(value: string): objectValueString { 
+    this.validRules.forEach((validRule, ruleName) => {
+      if(validRule) {
+        if(!validRule.regex.test(value) || value === '') {
+          this.inValidRule[ruleName] = validRule.errorMessage;
+        } else {
+          delete this.inValidRule[ruleName]
         }
       }
     })

@@ -11,24 +11,26 @@ const TodoList: React.FC<IProps> = (props): JSX.Element => {
   const renderData = (): Array<JSX.Element> | ReactElement => {
     let { promiseData } = props;
 
+    if(promiseData && promiseData.length > 5) {
+      promiseData.length = 5
+    }
+
     return promiseData?.length
       ? promiseData.map((user, index) => (
-          <li className="List" key={user.id}>
-            <div className="List-header">
-              <p>{user.userId}</p>
-              <h2>{user.title}</h2>
-            </div>
-            <p className="List-note">
-              <input
-                type="checkbox"
-                name={`${user.id}`}
-                id=""
-                checked={user.completed}
-                title={`${user.title}`}
-              />
-            </p>
-          </li>
-        ))
+        <li key={user.id}>
+          <p>{user.userId}</p>
+          <p>{user.title}</p>
+          <p>
+            <input
+              type="checkbox"
+              name={`${user.id}`}
+              id=""
+              checked={user.completed}
+              title={`${user.title}`}
+            />
+          </p>
+        </li>
+      ))
       : <p>No Content</p>;
   };
   return (

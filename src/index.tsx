@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import Error from "./view/pages/error";
 import LoadingEffect from "./view/pages/loading_effect";
+import FormValidate from "./view/pages/form_validate";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: "loading_effect",
         element: <LoadingEffect />,
+      },
+      {
+        path: "form_validate",
+        element: <FormValidate />,
       },
     ],
   },

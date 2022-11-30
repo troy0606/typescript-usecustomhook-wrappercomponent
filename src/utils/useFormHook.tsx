@@ -1,28 +1,56 @@
 import React, { useState } from "react";
 import { objectValueString } from "../models/types/common";
+import { validatorObj } from "./validateRule/model";
 import { IValidator } from "./Validator";
 
-const useFormHook = (initialState = {}, validators: Map<string,IValidator>) => {
-  const [formData, setFormData] = useState(initialState);
+const useFormHook = <T,>(
+  initialValue = {} as T,
+  validators: validatorObj<T>
+) => {
+  const [formData, setFormData] = useState(initialValue);
+  const [inValidRules, setInValidRules] = useState(new Map() as Map<string, objectValueString>);
 
-  const inValidRules: Map<string, objectValueString> = new Map();
+  type targetName = keyof T & string;
 
-  const handleInputChange = (e:  React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const validateName = e.target.name;
-    const formDataCopy = { ...formData, [e.target.name]: e.target.value };
-    validateInput(formDataCopy);
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    let newValue;
+    const eventTarget = e.target;
+
+    if (eventTarget.type === "checkbox") {
+      newValue = { [eventTarget.name as targetName]: (eventTarget as HTMLInputElement).checked };
+    } else {
+      newValue = { [eventTarget.name as targetName]: eventTarget.value || "" };
+    }
+    const formDataCopy = { ...formData, [eventTarget.name]: eventTarget.value };
+    validateInput(eventTarget.name as targetName, eventTarget.value);
     setFormData(formDataCopy);
   };
 
-  const validateInput(formData: objectValueString):Map<string, objectValueString> => {
-    const InValidateRuls: Map<string, objectValueString> = new Map();
-    Object.keys(formData).forEach((key)=> {
-      
-    })
-    return InValidateRuls
-  }
+  const validateInput = (targetName: targetName, targetValue: string) => {
+    inValidRules.set(
+      targetName,
+      validators[targetName].getAllInvalidRule(targetValue)
+    );
+    setInValidRules(new Map(inValidRules))
+  };
 
-  return { formData, handleInputChange, inValidRules };
+  const validateAllRules = () => {
+    Object.keys(formData as any).forEach((key) => {
+      const targetKey = key as targetName; 
+      const value = formData[targetKey];
+      if(typeof value === "string") {
+        inValidRules.set(
+          targetKey,
+          validators[targetKey].getAllInvalidRule(value)
+        );
+      }
+    })
+    setInValidRules(new Map(inValidRules))
+  };
+
+  return { formData, handleInputChange, inValidRules, validateAllRules };
 };
 
 export default useFormHook;
