@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { objectValueString } from "../models/types/common";
 import { validatorObj } from "./validateRule/model";
-import { IValidator } from "./Validator";
 
-const useFormHook = <T,>(
+const useFormHook = <T extends objectValueString,>(
   initialValue = {} as T,
   validators: validatorObj<T>
 ) => {
@@ -37,7 +36,8 @@ const useFormHook = <T,>(
   };
 
   const validateAllRules = () => {
-    Object.keys(formData as any).forEach((key) => {
+    const keys = Object.keys(formData) as (keyof T)[];
+    keys.forEach((key) => {
       const targetKey = key as targetName; 
       const value = formData[targetKey];
       if(typeof value === "string") {

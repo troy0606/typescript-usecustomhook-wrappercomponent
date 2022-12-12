@@ -2,7 +2,7 @@ import React, { Component, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 
-const Index: React.FC = () => {
+const News: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
@@ -13,4 +13,4 @@ const Index: React.FC = () => {
   return <div></div>;
 };
 
-export default Index;
+export default News;

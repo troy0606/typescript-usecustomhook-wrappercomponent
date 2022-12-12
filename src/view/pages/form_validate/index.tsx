@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { objectValueString } from "../../../models/types/common";
 import useFormHook from "../../../utils/useFormHook";
-import Validator, { IValidator } from "../../../utils/Validator";
 import validatorObject from "./validator";
 
 export interface IFormData {
@@ -13,22 +12,25 @@ export interface IFormData {
 export default function Index() {
   const { formData, handleInputChange, inValidRules, validateAllRules } =
     useFormHook(
-      { selectType: "", emailType: "", inputType: "" } as IFormData,
+      { selectType: "", emailType: "", inputType: "" } as IFormData & objectValueString,
       validatorObject
     );
 
-  const emailTypeInvalid = inValidRules.get("emailType");
-  const selectTypeInvalid = inValidRules.get("selectType");
-  const inputTypeInvalid = inValidRules.get("inputType");
 
   const renderValidaion = (selectType: string) => {
     const invalidObject = inValidRules.get(selectType);
     if(invalidObject) {
       const objectArray = Object.entries(invalidObject);
-      return objectArray.map(([key, value], index) => <div key={index}>{value}</div>);
+      return objectArray.map(([, value], index) => <div key={index}>{value}</div>);
     }
 
   }
+  const NAME_OBJECT: {[key in keyof IFormData]: keyof IFormData} = {
+    selectType: 'selectType',
+    emailType: 'emailType',
+    inputType: 'inputType',
+  } 
+
   return (
     <form>
       <label>
@@ -36,7 +38,7 @@ export default function Index() {
         <select
           value={formData.selectType}
           onChange={handleInputChange}
-          name="selectType"
+          name={NAME_OBJECT.selectType} 
         >
           <option value="">please choose</option>
           <option value="grapefruit">Grapefruit</option>
@@ -50,7 +52,7 @@ export default function Index() {
       <label>
         Member email:
         <input
-          name="emailType"
+          name={NAME_OBJECT.emailType} 
           type="email"
           value={formData.emailType}
           onChange={handleInputChange}
@@ -61,7 +63,7 @@ export default function Index() {
       <label>
         Number of guests:
         <input
-          name="inputType"
+          name={NAME_OBJECT.inputType} 
           type="number"
           value={formData.inputType}
           onChange={handleInputChange}

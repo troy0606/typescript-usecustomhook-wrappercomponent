@@ -1,27 +1,27 @@
 import React, { ReactElement } from "react";
-import { ITodo, ITodoList } from "../../redux/todos";
+import { ITodo } from "../../redux/todos";
 
 interface IProps {
-  promiseData?: ITodo;
+  data: ITodo | null;
 }
 
 const TodoList: React.FC<IProps> = (props): JSX.Element => {
   // 方法一定要定義返回的型別
   // typescript可以在型別推斷的時候協助檢查
   const renderData = (): JSX.Element | ReactElement => {
-    let { promiseData } = props;
+    let { data } = props;
 
-    return promiseData ? (
-      <p key={promiseData.id}>
-        <p>{promiseData.userId}</p>
-        <p>{promiseData.title}</p>
+    return data ? (
+      <p key={data.id}>
+        <p>{data.userId}</p>
+        <p>{data.title}</p>
         <p>
           <input
             type="checkbox"
-            name={`${promiseData.id}`}
+            name={`${data.id}`}
             id=""
-            checked={promiseData.completed}
-            title={`${promiseData.title}`}
+            checked={data.completed}
+            title={`${data.title}`}
           />
         </p>
       </p>

@@ -10,6 +10,7 @@ import Error from "./view/pages/error";
 import LoadingEffect from "./view/pages/loading_effect";
 import FormValidate from "./view/pages/form_validate";
 
+// TODO: 幫router 配置找家
 const router = createBrowserRouter([
   {
     path: "/",
